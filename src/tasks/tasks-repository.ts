@@ -23,16 +23,17 @@ export class TaskRepository extends Repository<Task> {
         return task
     }
 
-    async getTasks(filterDto: GetTasksFilterDto): Promise<Task[]> {
-        const query = this.createQueryBuilder("task")
+    async getTasks(filterDto: GetTasksFilterDto, user: UserAccount): Promise<Task[]> {
         const { status, search } = filterDto
+
+        const query = this.createQueryBuilder("task")
+        query.where({ user })
         if (status) {
             query.where("task.status = :status", { status })
         }
-
         if (search) {
             query.where(
-                "LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search)",
+                "(LOWER(task.title) LIKE LOWER(:search) OR LOWER(task.description) LIKE LOWER(:search))",
                 { search: `%${search}%`}
             )
         }
