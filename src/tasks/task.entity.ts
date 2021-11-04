@@ -18,5 +18,6 @@ export class Task {
     status: TaskStatus;
 
     @ManyToOne(_type => UserAccount, user => user.tasks, {eager: false})
+    @Exclude({ toPlainOnly: true })
     user: UserAccount
 }
