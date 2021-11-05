@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Logger, Param, Patch, Post, Query, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GetUser } from 'src/auth/get-user.decorator';
 import { UserAccount } from 'src/auth/user.entity';
@@ -11,10 +11,19 @@ import { TasksService } from './tasks.service';
 @Controller('tasks')
 @UseGuards(AuthGuard())
 export class TasksController {
+    private logger = new Logger(TasksController.name)
+
     constructor(private taskService: TasksService) {}
 
     @Get("/")
-    getTasks(@Query() filterDto: GetTasksFilterDto, @GetUser() user: UserAccount): Promise<Task[]> {
+    getTasks(
+        @Query() filterDto: GetTasksFilterDto,
+        @GetUser() user: UserAccount
+    ): Promise<Task[]> {
+        this.logger.verbose(
+            `User "${user.username}" retrieving all tasks ` +
+            `with filters "${JSON.stringify(filterDto)}"`
+        )
         return this.taskService.getTasks(filterDto, user)
     }
 
