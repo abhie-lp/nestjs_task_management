@@ -12,5 +12,6 @@ async function bootstrap() {
   const port = 3000
   await app.listen(port);
   logger.log(`Server listening on port ${3000}`)
+  console.log(process.env.STAGE)
 }
 bootstrap();
